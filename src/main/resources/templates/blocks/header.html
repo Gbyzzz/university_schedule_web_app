@@ -1,0 +1,29 @@
+<nav th:fragment="header" class="navbar navbar-expand-sm navbar-light bg-light sticky-top">
+    <div class="container-fluid">
+        <form action="/" method="get">
+            <a href="#" class="navbar-brand" onclick="this.parentNode.submit()">University</a>
+        </form>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mynavbar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="mynavbar">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <form action="/users/all" method="get">
+                        <a href="#" class="nav-link" onclick="this.parentNode.submit()">Users</a>
+                    </form>
+                </li>
+                <li class="nav-item">
+                    <form action="/courses/all" method="get">
+                        <a href="#" class="nav-link" onclick="this.parentNode.submit()">Courses</a>
+                    </form>
+                </li>
+                <li class="nav-item">
+                    <form action="/schedule" method="get">
+                        <a href="#" class="nav-link" onclick="this.parentNode.submit()">Schedule</a>
+                    </form>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>

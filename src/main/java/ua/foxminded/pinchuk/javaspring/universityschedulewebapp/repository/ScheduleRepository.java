@@ -12,5 +12,5 @@ import java.util.List;
 @Repository
 public interface ScheduleRepository extends JpaRepository<Schedule, Integer> {
     //    List<Schedule> getSchedulesByCourse_StudentsIsContainingOrCourse_TeacherIsContainingAndCourseIsBetween(User user, Date date);
-    List<Schedule> getSchedulesByCourse_StudentsIsContainingAndStartTimeBetweenOrCourse_TeacherAndStartTimeBetween(User user, LocalDate start, LocalDate end, User user1, LocalDate start1, LocalDate end1);
+    List<Schedule> getSchedulesByCourse_StudentsIsContainingAndStartTimeBetweenOrCourse_TeacherAndStartTimeBetween(User user, Date start, Date end, User user1, Date start1, Date end1);
 }

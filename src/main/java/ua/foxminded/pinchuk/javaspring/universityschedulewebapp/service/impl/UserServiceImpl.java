@@ -6,6 +6,7 @@ import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.repository.UserR
 import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.service.UserService;
 import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.service.exception.UniversityServiceException;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -30,5 +31,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public void saveOrUpdate(User user) {
         userRepository.save(user);
+    }
+
+    @Override
+    public List<User> findAll() {
+        return userRepository.findAll();
     }
 }

@@ -8,7 +8,8 @@ import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.repository.Sched
 import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.service.ScheduleService;
 import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.service.exception.UniversityServiceException;
 
-import java.sql.Date;
+import java.time.ZoneId;
+import java.util.Date;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -16,6 +17,7 @@ import java.util.Optional;
 @Service
 public class ScheduleServiceImpl implements ScheduleService {
     private ScheduleRepository scheduleRepository;
+    private ZoneId defaultZoneId = ZoneId.systemDefault();
 
     public ScheduleServiceImpl(ScheduleRepository scheduleRepository) {
         this.scheduleRepository = scheduleRepository;
@@ -44,13 +46,22 @@ public class ScheduleServiceImpl implements ScheduleService {
     @Override
     public List<Schedule> getDayScheduleByUser(User user, LocalDate date) {
         LocalDate end = date.plusDays(1);
-        return scheduleRepository.getSchedulesByCourse_StudentsIsContainingAndStartTimeBetweenOrCourse_TeacherAndStartTimeBetween(user, date, end, user, date, end);
+        Date endDate = Date.from(end.atStartOfDay(defaultZoneId).toInstant());
+        Date startDate = Date.from(date.atStartOfDay(defaultZoneId).toInstant());
+        return scheduleRepository.getSchedulesByCourse_StudentsIsContainingAndStartTimeBetweenOrCourse_TeacherAndStartTimeBetween(user, startDate, endDate, user, startDate, endDate);
     }
 
     @Override
     public List<Schedule> getMonthScheduleByUser(User user, LocalDate date) {
         date = date.withDayOfMonth(1);
         LocalDate end = date.plusMonths(1);
-        return scheduleRepository.getSchedulesByCourse_StudentsIsContainingAndStartTimeBetweenOrCourse_TeacherAndStartTimeBetween(user, date, end, user, date, end);
+        Date endDate = Date.from(end.atStartOfDay(defaultZoneId).toInstant());
+        Date startDate = Date.from(date.atStartOfDay(defaultZoneId).toInstant());
+        return scheduleRepository.getSchedulesByCourse_StudentsIsContainingAndStartTimeBetweenOrCourse_TeacherAndStartTimeBetween(user, startDate, endDate, user, startDate, endDate);
+    }
+
+    @Override
+    public List<Schedule> getAll() {
+        return scheduleRepository.findAll();
     }
 }
