@@ -1,12 +1,10 @@
 package ua.foxminded.pinchuk.javaspring.universityschedulewebapp.controller;
 
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.view.RedirectView;
-import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.auth.AuthenticationService;
 import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.bean.AppUser;
 import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.bean.Course;
 import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.bean.Schedule;
@@ -15,23 +13,18 @@ import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.service.Schedule
 import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.service.UserService;
 import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.service.exception.UniversityServiceException;
 
-import javax.xml.crypto.Data;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.util.Date;
-import java.util.List;
 
 @org.springframework.stereotype.Controller
 public class Controller {
 
-    private final AuthenticationService authenticationService;
     private final UserService userService;
     private final CourseService courseService;
     private final ScheduleService scheduleService;
 
-    public Controller(AuthenticationService authenticationService, UserService userService, CourseService courseService, ScheduleService scheduleService) {
-        this.authenticationService = authenticationService;
+    public Controller(UserService userService, CourseService courseService, ScheduleService scheduleService) {
         this.userService = userService;
         this.courseService = courseService;
         this.scheduleService = scheduleService;

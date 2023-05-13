@@ -20,12 +20,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public AppUser findUserById(int id) throws UniversityServiceException {
-        Optional<AppUser> optionalUser = userRepository.findById(id);
-        if(optionalUser.isPresent()) {
-            return optionalUser.get();
-        } else {
-            throw new UniversityServiceException("User with id:" + id + " haven't been found in the database");
-        }
+        return userRepository.findById(id).orElseThrow(() -> new UniversityServiceException("User with id:" + id + " haven't been found in the database"));
     }
 
     @Override
