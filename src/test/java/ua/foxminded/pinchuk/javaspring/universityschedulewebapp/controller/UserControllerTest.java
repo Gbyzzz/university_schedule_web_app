@@ -6,15 +6,11 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.Source;
-import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.bean.Course;
-import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.bean.User;
-import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.service.CourseService;
 import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.service.UserService;
 
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;

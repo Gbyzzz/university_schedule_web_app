@@ -1,0 +1,39 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <script src="/webjars/jquery/3.6.3/dist/jquery.min.js"></script>
+    <script src="/webjars/bootstrap/5.2.3/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="/webjars/bootstrap/5.2.3/css/bootstrap.min.css"/>
+    <title>University Schedule Web App - Admin Page</title>
+</head>
+<body>
+<header th:insert="blocks/header :: header"></header>
+
+<div class="container mt-3">
+
+    <div class="row">
+        <div class="col-sm-4">
+            <form th:action="@{/admin/users}" sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_TEACHER')">
+                <button type="submit" class="btn btn-dark">
+                    Users
+                </button>
+            </form>
+        </div>
+        <div class="col-sm-4">
+            <form th:action="@{/admin/courses}" sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_TEACHER')">
+                <button type="submit" class="btn btn-dark">
+                    Courses
+                </button>
+            </form>
+        </div>
+        <div class="col-sm-4">
+            <form th:action="@{/admin/schedules}">
+                <button type="submit" class="btn btn-dark">
+                    Schedules
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>
