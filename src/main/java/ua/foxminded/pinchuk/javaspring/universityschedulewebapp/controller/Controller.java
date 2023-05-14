@@ -16,6 +16,8 @@ import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.service.exceptio
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @org.springframework.stereotype.Controller
 public class Controller {
@@ -82,11 +84,17 @@ public class Controller {
     RedirectView adminCoursesPageSave(@RequestParam(required = false) Integer courseId,
                                       @RequestParam String courseName,
                                       @RequestParam String description,
+                                      @RequestParam int[] studentId,
                                       @RequestParam int teacherId) throws UniversityServiceException {
         Course course = new Course();
         if(courseId != null){
             course.setCourseId(courseId);
         }
+        List<AppUser> students = new ArrayList<>();
+        for(int st : studentId){
+            students.add(userService.findUserById(st));
+        }
+        course.setStudents(students);
         course.setCourseName(courseName);
         course.setTeacher(userService.findUserById(teacherId));
         course.setDescription(description);
