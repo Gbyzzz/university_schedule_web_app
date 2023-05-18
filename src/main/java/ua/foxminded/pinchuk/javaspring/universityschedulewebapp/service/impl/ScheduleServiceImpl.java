@@ -1,5 +1,6 @@
 package ua.foxminded.pinchuk.javaspring.universityschedulewebapp.service.impl;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.bean.Schedule;
@@ -77,6 +78,7 @@ public class ScheduleServiceImpl implements ScheduleService {
         }
     }
 
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_TEACHER')")
     private boolean checkUserPermissions(int userId) {
         AppUser currentUser = (AppUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return userId == currentUser.getUserId() ||

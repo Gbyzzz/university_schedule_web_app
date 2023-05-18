@@ -21,16 +21,12 @@ import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.service.UserServ
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
-public class SecurityConfiguration {
-
-
+    public class SecurityConfiguration {
     private final UserService userService;
 
     public SecurityConfiguration(UserService userService) {
         this.userService = userService;
     }
-
-
     @Bean
     SecurityFilterChain config(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity

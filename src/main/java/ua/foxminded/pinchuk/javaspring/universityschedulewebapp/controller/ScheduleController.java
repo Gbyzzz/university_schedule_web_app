@@ -16,21 +16,19 @@ import java.time.LocalDate;
 @RequestMapping("/schedules")
 public class ScheduleController {
     private ScheduleService scheduleService;
-    private UserService userService;
 
-    public ScheduleController(ScheduleService scheduleService, UserService userService) {
+    public ScheduleController(ScheduleService scheduleService) {
         this.scheduleService = scheduleService;
-        this.userService = userService;
     }
 
     @GetMapping("")
-    String cocktailsPage(Model model){
-//        model.addAttribute("all_schedules", scheduleService.getAll());
+    String cocktailsPage(){
         return "schedules";
     }
 
     @GetMapping("/get")
-    String getScheduleByUserIdAndDate   (@RequestParam int userId, @RequestParam LocalDate date, @RequestParam String type, Model model) throws Exception {
+    String getScheduleByUserIdAndDate   (@RequestParam int userId, @RequestParam LocalDate date,
+                                         @RequestParam String type, Model model) throws Exception {
             model.addAttribute("schedules", scheduleService.getScheduleByUser(userId, date, type));
         return "schedule";
     }
