@@ -48,10 +48,10 @@ public class ScheduleServiceImpl implements ScheduleService {
         scheduleRepository.delete(schedule);
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_TEACHER') or #userId == principal.getUserId())")
     @Override
     public List<Schedule> getScheduleByUser(int userId, LocalDate date, String type) throws Exception {
 
-        if (checkUserPermissions(userId)) {
             AppUser appUser;
             try {
                 appUser = userService.findUserById(userId);
@@ -73,17 +73,6 @@ public class ScheduleServiceImpl implements ScheduleService {
             }
 
             return scheduleRepository.getSchedulesByCourse_StudentsIsContainingAndStartTimeBetweenOrCourse_TeacherAndStartTimeBetween(appUser, startDate, endDate, appUser, startDate, endDate);
-        } else {
-            throw new Exception("You can't get schedule of another user");
-        }
-    }
-
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_TEACHER')")
-    private boolean checkUserPermissions(int userId) {
-        AppUser currentUser = (AppUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return userId == currentUser.getUserId() ||
-                currentUser.getUserRole().equals(AppUser.Role.ROLE_ADMIN) ||
-                currentUser.getUserRole().equals(AppUser.Role.ROLE_TEACHER);
     }
 
     @Override

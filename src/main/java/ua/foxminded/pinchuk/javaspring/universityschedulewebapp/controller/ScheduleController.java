@@ -22,7 +22,7 @@ public class ScheduleController {
     }
 
     @GetMapping("")
-    String cocktailsPage(){
+    String schedulesPage(){
         return "schedules";
     }
 
