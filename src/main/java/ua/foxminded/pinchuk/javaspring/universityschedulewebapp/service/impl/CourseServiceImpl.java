@@ -13,7 +13,7 @@ import java.util.Optional;
 @Service
 public class CourseServiceImpl implements CourseService {
 
-    private CourseRepository courseRepository;
+    private final CourseRepository courseRepository;
 
     public CourseServiceImpl(CourseRepository courseRepository) {
         this.courseRepository = courseRepository;
@@ -21,12 +21,9 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public Course findCourseById(int id) throws UniversityServiceException {
-        Optional<Course> optionalCourse = courseRepository.findById(id);
-        if(optionalCourse.isPresent()){
-            return optionalCourse.get();
-        } else {
-            throw new UniversityServiceException("Course with id:" + id + " haven't been found in the database");
-        }
+        return courseRepository.findById(id)
+                .orElseThrow(()-> new UniversityServiceException("Course with id:"
+                        + id + " haven't been found in the database"));
     }
 
     @Override

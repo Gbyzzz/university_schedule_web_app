@@ -12,7 +12,7 @@ import java.util.Optional;
 @Service
 public class UserServiceImpl implements UserService {
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -20,7 +20,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public AppUser findUserById(int id) throws UniversityServiceException {
-        return userRepository.findById(id).orElseThrow(() -> new UniversityServiceException("User with id:" + id + " haven't been found in the database"));
+        return userRepository.findById(id)
+                .orElseThrow(() -> new UniversityServiceException("User with id:" +
+                        id + " haven't been found in the database"));
     }
 
     @Override

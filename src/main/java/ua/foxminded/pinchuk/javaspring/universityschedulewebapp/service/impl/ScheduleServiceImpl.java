@@ -13,7 +13,6 @@ import java.time.ZoneId;
 import java.util.Date;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ScheduleServiceImpl implements ScheduleService {
@@ -29,12 +28,9 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     @Override
     public Schedule findScheduleById(int id) throws UniversityServiceException {
-        Optional<Schedule> optionalSchedule = scheduleRepository.findById(id);
-        if (optionalSchedule.isPresent()) {
-            return optionalSchedule.get();
-        } else {
-            throw new UniversityServiceException("Schedule with id:" + id + " haven't been found in the database");
-        }
+        return scheduleRepository.findById(id)
+                .orElseThrow(()->new UniversityServiceException("Schedule with id:" +
+                        id + " haven't been found in the database"));
     }
 
     @Override
