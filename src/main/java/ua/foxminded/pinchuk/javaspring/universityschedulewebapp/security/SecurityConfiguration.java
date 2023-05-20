@@ -21,20 +21,19 @@ import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.service.UserServ
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
-    public class SecurityConfiguration {
+public class SecurityConfiguration {
     private final UserService userService;
 
     public SecurityConfiguration(UserService userService) {
         this.userService = userService;
     }
+
     @Bean
     SecurityFilterChain config(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
                 .authorizeHttpRequests()
-                .requestMatchers("/","/sign_up","/resources/**","/static/**","/webjars/**")
+                .requestMatchers("/", "/sign_up", "/resources/**", "/static/**", "/webjars/**")
                 .permitAll()
-                .requestMatchers("/schedules/*")
-                .hasAnyAuthority(AppUser.Role.ROLE_STUDENT.name(), AppUser.Role.ROLE_ADMIN.name(), AppUser.Role.ROLE_TEACHER.name())
                 .requestMatchers("/courses/add", "/users/*", "/admin/**")
                 .hasAnyAuthority(AppUser.Role.ROLE_ADMIN.name(), AppUser.Role.ROLE_TEACHER.name())
                 .anyRequest().authenticated()
@@ -45,8 +44,8 @@ import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.service.UserServ
 
 
     @Bean
-    public UserDetailsService userDetailsService(){
-        return  email->userService.findUserByEmail(email).orElseThrow(()->new UsernameNotFoundException("User not found"));
+    public UserDetailsService userDetailsService() {
+        return email -> userService.findUserByEmail(email).orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 
     @Bean

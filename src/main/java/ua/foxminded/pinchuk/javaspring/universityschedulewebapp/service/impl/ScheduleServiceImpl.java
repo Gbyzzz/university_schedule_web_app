@@ -1,7 +1,6 @@
 package ua.foxminded.pinchuk.javaspring.universityschedulewebapp.service.impl;
 
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.bean.Schedule;
 import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.bean.AppUser;
@@ -50,7 +49,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     @PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_TEACHER') or #userId == principal.getUserId())")
     @Override
-    public List<Schedule> getScheduleByUser(int userId, LocalDate date, String type) throws Exception {
+    public List<Schedule> getScheduleByUser(int userId, LocalDate date, String type) {
 
             AppUser appUser;
             try {
