@@ -68,13 +68,7 @@ public class AdminController {
                                @RequestParam String email,
                                @RequestParam String role,
                                @RequestParam String phone) throws UniversityServiceException {
-        AppUser user = userService.findUserById(userId);
-        user.setEmail(email);
-        user.setLastName(lastName);
-        user.setFirstName(firstName);
-        user.setPhone(phone);
-        user.setUserRole(AppUser.Role.valueOf(role));
-        userService.saveOrUpdate(user);
+        userService.saveOrUpdate(userId, firstName, lastName, email, role, phone);
         return new RedirectView("/admin/users");
     }
 
@@ -84,19 +78,7 @@ public class AdminController {
                                       @RequestParam String description,
                                       @RequestParam int[] studentId,
                                       @RequestParam int teacherId) throws UniversityServiceException {
-        Course course = new Course();
-        if(courseId != null){
-            course.setCourseId(courseId);
-        }
-        List<AppUser> students = new ArrayList<>();
-        for(int st : studentId){
-            students.add(userService.findUserById(st));
-        }
-        course.setStudents(students);
-        course.setCourseName(courseName);
-        course.setTeacher(userService.findUserById(teacherId));
-        course.setDescription(description);
-        courseService.saveOrUpdate(course);
+        courseService.saveOrUpdate(courseId, courseName, description, studentId, teacherId);
         return new RedirectView("/admin/courses");
     }
 
@@ -122,16 +104,7 @@ public class AdminController {
                                   @RequestParam int courseId,
                                   @RequestParam String startTime,
                                   @RequestParam String endTime) throws Exception {
-        Schedule schedule = new Schedule();
-        if(scheduleId != null) {
-            schedule.setScheduleId(scheduleId);
-        }
-        DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
-        schedule.setCourse(courseService.findCourseById(courseId));
-
-        schedule.setStartTime(formatter.parse(startTime));
-        schedule.setEndTime(formatter.parse(endTime));
-        scheduleService.saveOrUpdate(schedule);
+        scheduleService.saveOrUpdate(scheduleId, courseId, startTime, endTime);
         return "admin-schedules";
     }
     @PostMapping("/schedules/delete")

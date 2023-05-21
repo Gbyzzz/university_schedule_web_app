@@ -5,10 +5,14 @@ import org.springframework.stereotype.Service;
 import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.bean.Schedule;
 import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.bean.AppUser;
 import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.repository.ScheduleRepository;
+import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.service.CourseService;
 import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.service.ScheduleService;
 import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.service.UserService;
 import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.service.exception.UniversityServiceException;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.ZoneId;
 import java.util.Date;
 import java.time.LocalDate;
@@ -18,11 +22,13 @@ import java.util.List;
 public class ScheduleServiceImpl implements ScheduleService {
     private final ScheduleRepository scheduleRepository;
     private final ZoneId defaultZoneId = ZoneId.systemDefault();
+    private final CourseService courseService;
 
     private final UserService userService;
 
-    public ScheduleServiceImpl(ScheduleRepository scheduleRepository, UserService userService) {
+    public ScheduleServiceImpl(ScheduleRepository scheduleRepository, CourseService courseService, UserService userService) {
         this.scheduleRepository = scheduleRepository;
+        this.courseService = courseService;
         this.userService = userService;
     }
 
@@ -31,11 +37,6 @@ public class ScheduleServiceImpl implements ScheduleService {
         return scheduleRepository.findById(id)
                 .orElseThrow(()->new UniversityServiceException("Schedule with id:" +
                         id + " haven't been found in the database"));
-    }
-
-    @Override
-    public void saveOrUpdate(Schedule schedule) {
-        scheduleRepository.save(schedule);
     }
 
     @Override
@@ -73,5 +74,19 @@ public class ScheduleServiceImpl implements ScheduleService {
     @Override
     public List<Schedule> getAll() {
         return scheduleRepository.findAll();
+    }
+
+    @Override
+    public void saveOrUpdate(Integer scheduleId, int courseId, String startTime, String endTime) throws UniversityServiceException, ParseException {
+        Schedule schedule = new Schedule();
+        if(scheduleId != null) {
+            schedule.setScheduleId(scheduleId);
+        }
+        DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
+        schedule.setCourse(courseService.findCourseById(courseId));
+
+        schedule.setStartTime(formatter.parse(startTime));
+        schedule.setEndTime(formatter.parse(endTime));
+        scheduleRepository.save(schedule);
     }
 }

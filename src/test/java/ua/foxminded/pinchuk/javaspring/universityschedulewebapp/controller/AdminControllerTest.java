@@ -81,7 +81,7 @@ class AdminControllerTest {
         given(userService.findUserById(2)).willReturn(Source.appUser2);
         AppUser appUser = new AppUser(2, "student5@university.com", "123456",
                 "Adam", "Thompson", AppUser.Role.ROLE_STUDENT,"164321");
-        doNothing().when(userService).saveOrUpdate(isA(AppUser.class));
+        doNothing().when(userService).saveOrUpdate(isA(int.class), isA(String.class), isA(String.class), isA(String.class), isA(String.class), isA(String.class));
 
         mvc.perform(post("/admin/users/save")
                 .param("userId", "2")
@@ -100,7 +100,7 @@ class AdminControllerTest {
         given(userService.findUserById(1)).willReturn(Source.appUser1);
         given(userService.findUserById(2)).willReturn(Source.appUser2);
         given(userService.findUserById(3)).willReturn(Source.appUser3);
-        doNothing().when(courseService).saveOrUpdate(isA(Course.class));
+        doNothing().when(courseService).saveOrUpdate(isA(Integer.class), isA(String.class), isA(String.class), isA(int[].class),isA(int.class));
 
         mvc.perform(post("/admin/courses/save")
                         .param("courseId", "2")
@@ -147,7 +147,7 @@ class AdminControllerTest {
     @WithMockUser(username="admin", authorities={"ROLE_TEACHER","ROLE_ADMIN"})
     void adminSchedulesPageSave() throws Exception {
         given(courseService.findCourseById(1)).willReturn(Source.course);
-        doNothing().when(scheduleService).saveOrUpdate(isA(Schedule.class));
+        doNothing().when(scheduleService).saveOrUpdate(isA(Integer.class), isA(Integer.class), isA(String.class), isA(String.class));
 
         mvc.perform(post("/admin/schedules/save")
                         .param("scheduleId", "1")

@@ -9,11 +9,11 @@ import java.util.Optional;
 public interface UserService {
     AppUser findUserById(int id) throws UniversityServiceException;
 
-    void saveOrUpdate(AppUser appUser);
-
     List<AppUser> findAll();
 
     Optional<AppUser> findUserByEmail(String email);
 
     List<AppUser> findAllByRole(AppUser.Role role);
+
+    void saveOrUpdate(int userId, String firstName, String lastName, String email, String role, String phone) throws UniversityServiceException;
 }

@@ -26,11 +26,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void saveOrUpdate(AppUser appUser) {
-        userRepository.save(appUser);
-    }
-
-    @Override
     public List<AppUser> findAll() {
         return userRepository.findAllByOrderByUserIdAsc();
     }
@@ -43,5 +38,16 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<AppUser> findAllByRole(AppUser.Role role) {
         return userRepository.findAppUsersByUserRole(role);
+    }
+
+    @Override
+    public void saveOrUpdate(int userId, String firstName, String lastName, String email, String role, String phone) throws UniversityServiceException {
+        AppUser user = findUserById(userId);
+        user.setEmail(email);
+        user.setLastName(lastName);
+        user.setFirstName(firstName);
+        user.setPhone(phone);
+        user.setUserRole(AppUser.Role.valueOf(role));
+        userRepository.save(user);
     }
 }
