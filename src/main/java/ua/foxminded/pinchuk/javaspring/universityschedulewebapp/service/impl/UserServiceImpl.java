@@ -1,5 +1,6 @@
 package ua.foxminded.pinchuk.javaspring.universityschedulewebapp.service.impl;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.bean.AppUser;
 import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.repository.UserRepository;
@@ -13,9 +14,11 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -41,8 +44,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void saveOrUpdate(int userId, String firstName, String lastName, String email, String role, String phone) throws UniversityServiceException {
-        AppUser user = findUserById(userId);
+    public void saveOrUpdate(Integer userId, String password, String firstName, String lastName, String email, String role, String phone) throws UniversityServiceException {
+        AppUser user;
+        if(userId != null){
+            user = findUserById(userId);
+        } else {
+            user = new AppUser();
+            user.setPassword(passwordEncoder.encode(password));
+        }
         user.setEmail(email);
         user.setLastName(lastName);
         user.setFirstName(firstName);

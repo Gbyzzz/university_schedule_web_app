@@ -3,9 +3,7 @@ package ua.foxminded.pinchuk.javaspring.universityschedulewebapp.controller;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.bean.AppUser;
 import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.bean.Course;
@@ -36,18 +34,18 @@ public class AdminController {
     }
 
     @RequestMapping("")
-    String adminPage(Model model){
+    String adminPage() {
         return "admin";
     }
 
     @RequestMapping("/users")
-    String adminUsersPage(Model model){
+    String adminUsersPage(Model model) {
         model.addAttribute("users", userService.findAll());
         return "admin-users";
     }
 
     @RequestMapping("/courses")
-    String adminCoursesPage(Model model){
+    String adminCoursesPage(Model model) {
         model.addAttribute("courses", courseService.findAll());
         model.addAttribute("allTeachers", userService.findAllByRole(AppUser.Role.ROLE_TEACHER));
         model.addAttribute("allStudents", userService.findAllByRole(AppUser.Role.ROLE_STUDENT));
@@ -55,25 +53,37 @@ public class AdminController {
     }
 
     @RequestMapping("/schedules")
-    String adminSchedulesPage(Model model){
+    String adminSchedulesPage(Model model) {
         model.addAttribute("courses", courseService.findAll());
         return "admin-schedules";
     }
 
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    @PostMapping("/users/save")
+    @PutMapping("/users/save")
     RedirectView adminUserSave(@RequestParam int userId,
                                @RequestParam String firstName,
                                @RequestParam String lastName,
                                @RequestParam String email,
                                @RequestParam String role,
                                @RequestParam String phone) throws UniversityServiceException {
-        userService.saveOrUpdate(userId, firstName, lastName, email, role, phone);
+        userService.saveOrUpdate(userId, null, firstName, lastName, email, role, phone);
         return new RedirectView("/admin/users");
     }
 
-    @PostMapping("/courses/save")
-    RedirectView adminCoursesPageSave(@RequestParam(required = false) Integer courseId,
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @PostMapping("/users/add")
+    RedirectView adminUserAdd(@RequestParam String firstName,
+                              @RequestParam String lastName,
+                              @RequestParam String email,
+                              @RequestParam String role,
+                              @RequestParam String password,
+                              @RequestParam String phone) throws UniversityServiceException {
+        userService.saveOrUpdate(null, password, firstName, lastName, email, role, phone);
+        return new RedirectView("/admin/users");
+    }
+
+    @PutMapping("/courses/save")
+    RedirectView adminCoursesPageSave(@RequestParam Integer courseId,
                                       @RequestParam String courseName,
                                       @RequestParam String description,
                                       @RequestParam int[] studentId,
@@ -82,8 +92,17 @@ public class AdminController {
         return new RedirectView("/admin/courses");
     }
 
+    @PostMapping("/courses/add")
+    RedirectView adminCoursesPageAdd(@RequestParam String courseName,
+                                     @RequestParam String description,
+                                     @RequestParam int[] studentId,
+                                     @RequestParam int teacherId) throws UniversityServiceException {
+        courseService.saveOrUpdate(null, courseName, description, studentId, teacherId);
+        return new RedirectView("/admin/courses");
+    }
 
-    @RequestMapping("/courses/delete")
+
+    @DeleteMapping("/courses/delete")
     RedirectView adminCoursesPageDelete(@RequestParam int deleteCourseId) throws UniversityServiceException {
         courseService.removeCourse(courseService.findCourseById(deleteCourseId));
         return new RedirectView("/admin/courses");
@@ -99,15 +118,24 @@ public class AdminController {
         return "admin-schedules";
     }
 
-    @PostMapping("/schedules/save")
-    String adminSchedulesPageSave(@RequestParam(required = false) Integer scheduleId,
+    @PutMapping("/schedules/save")
+    String adminSchedulesPageSave(@RequestParam Integer scheduleId,
                                   @RequestParam int courseId,
                                   @RequestParam String startTime,
                                   @RequestParam String endTime) throws Exception {
         scheduleService.saveOrUpdate(scheduleId, courseId, startTime, endTime);
         return "admin-schedules";
     }
-    @PostMapping("/schedules/delete")
+
+    @PostMapping("/schedules/add")
+    String adminSchedulesPageAdd(@RequestParam int courseId,
+                                 @RequestParam String startTime,
+                                 @RequestParam String endTime) throws Exception {
+        scheduleService.saveOrUpdate(null, courseId, startTime, endTime);
+        return "admin-schedules";
+    }
+
+    @DeleteMapping("/schedules/delete")
     RedirectView adminSchedulesPageDelete(@RequestParam int deleteScheduleId) throws Exception {
         scheduleService.remove(scheduleService.findScheduleById(deleteScheduleId));
         return new RedirectView("/admin/schedules");

@@ -1,5 +1,5 @@
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="eng">
 <head>
     <script src="/webjars/jquery/3.6.3/dist/jquery.min.js"></script>
     <script src="/webjars/bootstrap/5.2.3/js/bootstrap.min.js"></script>
@@ -18,6 +18,16 @@
 <div class="container mt-3">
 
     <h3>Users</h3>
+
+    <button type="button" class="btn btn-dark" data-bs-toggle="modal"
+            data-bs-target="#add" sec:authorize="hasRole('ROLE_ADMIN')">
+        Add user
+    </button>
+
+
+
+
+
     <table class="table">
         <thead class="thead-dark">
         <tr>
@@ -54,7 +64,7 @@
 
                             <!-- Modal body -->
                             <div class="modal-body modal-lg">
-                                <form th:action="@{/admin/users/save}" method="post">
+                                <form th:action="@{/admin/users/save}" th:method="put">
                                     <label> ID
                                         <input name="userId" type="number" class="form-control"
                                                th:value="${appUser.userId}"
@@ -93,6 +103,64 @@
                                                th:value="${appUser.phone}">
                                     </label>
                                     <button type="submit" class="btn btn-dark">Save</button>
+                                </form>
+                            </div>
+
+                            <!-- Modal footer -->
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="modal" id="add">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+
+                            <!-- Modal Header -->
+                            <div class="modal-header">
+                                <h4 class="modal-title">Modal Heading</h4>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+
+                            <!-- Modal body -->
+                            <div class="modal-body modal-lg">
+                                <form th:action="@{/admin/users/add}" th:method="post">
+                                    <label>First Name
+                                        <input name="firstName" type="text" class="form-control">
+                                    </label>
+                                    <label>Last name
+                                        <input name="lastName" type="text" class="form-control">
+                                    </label>
+                                    <label> Email
+                                        <input name="email" type="text" class="form-control">
+                                    </label>
+                                    <label>Password
+                                        <input name="password" type="text" class="form-control">
+                                    </label>
+                                    <label>Role
+                                        <select class="form-select" name="role">
+                                            <option value="ROLE_ADMIN"
+                                                    th:selected="${appUser.userRole.name().equals('ROLE_ADMIN')}">
+                                                Admin
+                                            </option>
+                                            <option value="ROLE_TEACHER"
+                                                    th:selected="${appUser.userRole.name().equals('ROLE_TEACHER')}">
+                                                Teacher
+                                            </option>
+                                            <option value="ROLE_STUDENT"
+                                                    th:selected="${appUser.userRole.name().equals('ROLE_STUDENT')}">
+                                                Student
+                                            </option>
+                                        </select>
+                                    </label>
+                                    <label>Phone
+                                        <input name="phone" type="text" class="form-control">
+                                    </label>
+                                    <button type="submit" class="btn btn-dark">Add</button>
                                 </form>
                             </div>
 

@@ -81,7 +81,7 @@ class AdminControllerTest {
         given(userService.findUserById(2)).willReturn(Source.appUser2);
         AppUser appUser = new AppUser(2, "student5@university.com", "123456",
                 "Adam", "Thompson", AppUser.Role.ROLE_STUDENT,"164321");
-        doNothing().when(userService).saveOrUpdate(isA(int.class), isA(String.class), isA(String.class), isA(String.class), isA(String.class), isA(String.class));
+        doNothing().when(userService).saveOrUpdate(isA(int.class), isA(String.class), isA(String.class), isA(String.class), isA(String.class), isA(String.class), isA(String.class));
 
         mvc.perform(post("/admin/users/save")
                 .param("userId", "2")
