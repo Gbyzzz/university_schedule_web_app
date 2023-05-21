@@ -134,7 +134,7 @@
                                 <form th:action="@{/admin/courses/save}" method="post">
                                     <label> ID
                                         <input name="courseId" type="number" class="form-control"
-                                               th:value="${course.courseId}" th:disabled="${course.courseId != null}">
+                                               th:value="${course.courseId}" th:readonly="${course.courseId != null}">
                                     </label>
                                     <label>Course Name
                                         <input name="courseName" type="text" class="form-control"
@@ -145,7 +145,7 @@
                                                th:value="${course.description}">
                                     </label>
                                     <label> Teacher
-                                        <select class="form-select" name="teacher">
+                                        <select class="form-select" name="teacherId">
                                             <option th:each="teacher : ${allTeachers}"
                                                     th:value="${teacher.userId}"
                                                     th:text="${teacher.firstName} + ' ' + ${teacher.lastName}"
