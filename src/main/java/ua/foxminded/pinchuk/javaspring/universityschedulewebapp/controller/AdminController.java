@@ -4,20 +4,15 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.bean.AppUser;
-import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.bean.Course;
-import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.bean.Schedule;
 import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.service.CourseService;
 import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.service.ScheduleService;
 import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.service.UserService;
 import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.service.exception.UniversityServiceException;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
 @Controller
 @RequestMapping("/admin")
@@ -65,8 +60,9 @@ public class AdminController {
                                @RequestParam String lastName,
                                @RequestParam String email,
                                @RequestParam String role,
-                               @RequestParam String phone) throws UniversityServiceException {
-        userService.saveOrUpdate(userId, null, firstName, lastName, email, role, phone);
+                               @RequestParam String phone,
+                               RedirectAttributes redirectAttributes) throws UniversityServiceException {
+            userService.saveOrUpdate(userId, null, firstName, lastName, email, role, phone);
         return new RedirectView("/admin/users");
     }
 
@@ -77,8 +73,9 @@ public class AdminController {
                               @RequestParam String email,
                               @RequestParam String role,
                               @RequestParam String password,
-                              @RequestParam String phone) throws UniversityServiceException {
-        userService.saveOrUpdate(null, password, firstName, lastName, email, role, phone);
+                              @RequestParam String phone,
+                              RedirectAttributes redirectAttributes) throws UniversityServiceException {
+            userService.saveOrUpdate(null, password, firstName, lastName, email, role, phone);
         return new RedirectView("/admin/users");
     }
 
@@ -87,8 +84,10 @@ public class AdminController {
                                       @RequestParam String courseName,
                                       @RequestParam String description,
                                       @RequestParam int[] studentId,
-                                      @RequestParam int teacherId) throws UniversityServiceException {
-        courseService.saveOrUpdate(courseId, courseName, description, studentId, teacherId);
+                                      @RequestParam int teacherId,
+                                      RedirectAttributes redirectAttributes) throws UniversityServiceException {
+            courseService.saveOrUpdate(courseId, courseName, description, studentId, teacherId);
+
         return new RedirectView("/admin/courses");
     }
 
@@ -96,8 +95,9 @@ public class AdminController {
     RedirectView adminCoursesPageAdd(@RequestParam String courseName,
                                      @RequestParam String description,
                                      @RequestParam int[] studentId,
-                                     @RequestParam int teacherId) throws UniversityServiceException {
-        courseService.saveOrUpdate(null, courseName, description, studentId, teacherId);
+                                     @RequestParam int teacherId,
+                                     RedirectAttributes redirectAttributes) throws UniversityServiceException {
+            courseService.saveOrUpdate(null, courseName, description, studentId, teacherId);
         return new RedirectView("/admin/courses");
     }
 

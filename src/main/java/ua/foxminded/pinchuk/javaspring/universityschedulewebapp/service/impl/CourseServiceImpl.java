@@ -28,18 +28,19 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public Course findCourseById(int id) throws UniversityServiceException {
         return courseRepository.findById(id)
-                .orElseThrow(()-> new UniversityServiceException("Course with id:"
+                .orElseThrow(() -> new UniversityServiceException("Course with id:"
                         + id + " haven't been found in the database"));
     }
 
     @Override
-    public void saveOrUpdate(Integer courseId, String name, String description, int[] studentsId, int teacherId) throws UniversityServiceException {
+    public void saveOrUpdate(Integer courseId, String name, String description,
+                             int[] studentsId, int teacherId) throws UniversityServiceException {
         Course course = new Course();
-        if(courseId != null){
+        if (courseId != null) {
             course.setCourseId(courseId);
         }
         List<AppUser> students = new ArrayList<>();
-        for(int st : studentsId){
+        for (int st : studentsId) {
             students.add(userService.findUserById(st));
         }
         course.setStudents(students);

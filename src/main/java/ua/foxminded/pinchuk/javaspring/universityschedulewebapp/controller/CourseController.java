@@ -20,7 +20,7 @@ public class CourseController {
     }
 
     @GetMapping("/all")
-    String getAllUsers(Model model){
+    String getAllCourses(Model model){
         model.addAttribute("courses", courseService.findAll());
         return "courses";
     }

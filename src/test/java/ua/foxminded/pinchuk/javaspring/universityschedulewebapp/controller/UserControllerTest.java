@@ -9,6 +9,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.Source;
 import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.bean.AppUser;
 import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.service.UserService;
+import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.utils.CustomWithMockUser;
 
 import java.util.Arrays;
 import java.util.List;
@@ -28,7 +29,7 @@ class UserControllerTest {
     private UserService userService;
 
     @Test
-    @WithMockUser(username="admin", authorities={"ROLE_TEACHER","ROLE_ADMIN"})
+    @CustomWithMockUser(username = "admin", roles = {"ROLE_ADMIN"}, firstName = "John", lastName = "Doe")
     void getAllUsers() throws Exception {
         List<AppUser> appUserList = Arrays.asList(Source.appUser1, Source.appUser2, Source.appUser3);
         given(userService.findAll()).willReturn(appUserList);

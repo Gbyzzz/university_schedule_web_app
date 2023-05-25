@@ -14,6 +14,7 @@ import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.bean.AppUser;
 import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.bean.Schedule;
 import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.service.ScheduleService;
 import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.service.UserService;
+import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.utils.CustomWithMockUser;
 
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -37,7 +38,7 @@ class ScheduleControllerTest {
     private UserService userService;
 
     @ParameterizedTest
-    @WithMockUser(username="admin", authorities={"ROLE_TEACHER","ROLE_ADMIN"})
+    @CustomWithMockUser(username = "admin", roles = {"ROLE_ADMIN"}, firstName = "John", lastName = "Doe")
     @MethodSource("ua.foxminded.pinchuk.javaspring.universityschedulewebapp.Source#provideSchedules")
     void getAllMonthScheduleByUserId(List<Schedule> schedules, AppUser appUser, LocalDate date, String type) throws Exception {
         given(scheduleService.getScheduleByUser(appUser.getUserId(), date, type)).willReturn(schedules);

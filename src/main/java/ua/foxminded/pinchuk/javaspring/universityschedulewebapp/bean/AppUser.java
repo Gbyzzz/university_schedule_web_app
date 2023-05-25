@@ -17,7 +17,7 @@ public class AppUser implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
-    private int userId;
+    private Integer userId;
 
     @Column(name = "email")
     private String email;
@@ -42,7 +42,7 @@ public class AppUser implements UserDetails {
     public AppUser() {
     }
 
-    public AppUser(int userId, String email, String password, String firstName,
+    public AppUser(Integer userId, String email, String password, String firstName,
                    String lastName, Role userRole, String phone) {
         this.userId = userId;
         this.email = email;
@@ -53,11 +53,11 @@ public class AppUser implements UserDetails {
         this.phone = phone;
     }
 
-    public int getUserId() {
+    public Integer getUserId() {
         return userId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(Integer userId) {
         this.userId = userId;
     }
 

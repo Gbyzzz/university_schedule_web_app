@@ -50,6 +50,13 @@ public class UserServiceImpl implements UserService {
             user = findUserById(userId);
         } else {
             user = new AppUser();
+            if(userRepository.findUserByEmail(email).isPresent()){
+                throw new UniversityServiceException("User with such an email is already registered");
+            }
+            if (password.equals("")){
+                throw new UniversityServiceException("Password required");
+            }
+
             user.setPassword(passwordEncoder.encode(password));
         }
         user.setEmail(email);

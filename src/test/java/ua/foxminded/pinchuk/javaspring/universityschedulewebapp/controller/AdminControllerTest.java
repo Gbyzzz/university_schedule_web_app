@@ -16,6 +16,7 @@ import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.service.CourseSe
 import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.service.ScheduleService;
 import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.service.UserService;
 import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.service.exception.UniversityServiceException;
+import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.utils.CustomWithMockUser;
 
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -26,8 +27,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -46,7 +46,7 @@ class AdminControllerTest {
     private ScheduleService scheduleService;
 
     @Test
-    @WithMockUser(username="admin", authorities={"ROLE_ADMIN"})
+    @CustomWithMockUser(username = "admin", roles = {"ROLE_ADMIN"}, firstName = "John", lastName = "Doe")
     void adminUsersPage() throws Exception {
         given(userService.findAll()).willReturn(Source.users);
 
@@ -55,7 +55,7 @@ class AdminControllerTest {
     }
 
     @Test
-    @WithMockUser(username="admin", authorities={"ROLE_ADMIN", "ROLE_TEACHER"})
+    @CustomWithMockUser(username = "admin", roles = {"ROLE_ADMIN"}, firstName = "John", lastName = "Doe")
     void adminCoursesPage() throws Exception {
         given(courseService.findAll()).willReturn(Source.courses);
         given(userService.findAllByRole(AppUser.Role.ROLE_TEACHER)).willReturn(Source.teachers);
@@ -68,7 +68,7 @@ class AdminControllerTest {
     }
 
     @Test
-    @WithMockUser(username="admin", authorities={"ROLE_ADMIN", "ROLE_TEACHER"})
+    @CustomWithMockUser(username = "admin", roles = {"ROLE_ADMIN"}, firstName = "John", lastName = "Doe")
     void adminSchedulesPage() throws Exception {
         given(courseService.findAll()).willReturn(Source.courses);
         mvc.perform(get("/admin/courses"))
@@ -79,17 +79,32 @@ class AdminControllerTest {
     @WithMockUser(username="admin", authorities={"ROLE_ADMIN"})
     void adminUserSave() throws Exception {
         given(userService.findUserById(2)).willReturn(Source.appUser2);
-        AppUser appUser = new AppUser(2, "student5@university.com", "123456",
-                "Adam", "Thompson", AppUser.Role.ROLE_STUDENT,"164321");
         doNothing().when(userService).saveOrUpdate(isA(int.class), isA(String.class), isA(String.class), isA(String.class), isA(String.class), isA(String.class), isA(String.class));
 
-        mvc.perform(post("/admin/users/save")
+        mvc.perform(put("/admin/users/save")
                 .param("userId", "2")
                 .param("firstName", "Adam")
                 .param("lastName", "Thompson")
                 .param("email", "student5@university.com")
                 .param("role", "ROLE_STUDENT")
                 .param("phone", "164321")
+                        .with(csrf()))
+                .andExpect(status().is3xxRedirection());
+    }
+
+    @Test
+    @WithMockUser(username="admin", authorities={"ROLE_ADMIN"})
+    void adminUserAdd() throws Exception {
+        given(userService.findUserById(2)).willReturn(Source.appUser2);
+        doNothing().when(userService).saveOrUpdate(isA(Integer.class), isA(String.class), isA(String.class), isA(String.class), isA(String.class), isA(String.class), isA(String.class));
+
+        mvc.perform(post("/admin/users/add")
+                        .param("firstName", "Adam")
+                        .param("lastName", "Thompson")
+                        .param("email", "student5@university.com")
+                        .param("role", "ROLE_STUDENT")
+                        .param("password", "132435")
+                        .param("phone", "164321")
                         .with(csrf()))
                 .andExpect(status().is3xxRedirection());
     }
@@ -102,8 +117,25 @@ class AdminControllerTest {
         given(userService.findUserById(3)).willReturn(Source.appUser3);
         doNothing().when(courseService).saveOrUpdate(isA(Integer.class), isA(String.class), isA(String.class), isA(int[].class),isA(int.class));
 
-        mvc.perform(post("/admin/courses/save")
+        mvc.perform(put("/admin/courses/save")
                         .param("courseId", "2")
+                        .param("courseName", "Course1")
+                        .param("description", "Course1")
+                        .param("studentId", "2", "3")
+                        .param("teacherId", "1")
+                        .with(csrf()))
+                .andExpect(status().is3xxRedirection());
+    }
+
+    @Test
+    @WithMockUser(username="admin", authorities={"ROLE_TEACHER","ROLE_ADMIN"})
+    void adminCoursesPageAdd() throws Exception {
+        given(userService.findUserById(1)).willReturn(Source.appUser1);
+        given(userService.findUserById(2)).willReturn(Source.appUser2);
+        given(userService.findUserById(3)).willReturn(Source.appUser3);
+        doNothing().when(courseService).saveOrUpdate(isA(Integer.class), isA(String.class), isA(String.class), isA(int[].class),isA(int.class));
+
+        mvc.perform(post("/admin/courses/add")
                         .param("courseName", "Course1")
                         .param("description", "Course1")
                         .param("studentId", "2", "3")
@@ -118,7 +150,7 @@ class AdminControllerTest {
         given(courseService.findCourseById(1)).willReturn(Source.course);
         doNothing().when(courseService).removeCourse(isA(Course.class));
 
-        mvc.perform(post("/admin/courses/delete")
+        mvc.perform(delete("/admin/courses/delete")
                         .param("deleteCourseId", "1")
                         .with(csrf()))
                 .andExpect(status().is3xxRedirection());
@@ -126,7 +158,7 @@ class AdminControllerTest {
 
 
     @ParameterizedTest
-    @WithMockUser(username="admin", authorities={"ROLE_TEACHER","ROLE_ADMIN"})
+    @CustomWithMockUser(username = "admin", roles = {"ROLE_ADMIN"}, firstName = "John", lastName = "Doe")
     @MethodSource("ua.foxminded.pinchuk.javaspring.universityschedulewebapp.Source#provideSchedules")
     void adminSchedulesPageGet(List<Schedule> schedules, AppUser appUser, LocalDate date, String type) throws Exception {
         given(scheduleService.getScheduleByUser(appUser.getUserId(), date, type)).willReturn(schedules);
@@ -144,13 +176,27 @@ class AdminControllerTest {
     }
 
     @Test
-    @WithMockUser(username="admin", authorities={"ROLE_TEACHER","ROLE_ADMIN"})
+    @CustomWithMockUser(username = "admin", roles = {"ROLE_ADMIN"}, firstName = "John", lastName = "Doe")
     void adminSchedulesPageSave() throws Exception {
         given(courseService.findCourseById(1)).willReturn(Source.course);
         doNothing().when(scheduleService).saveOrUpdate(isA(Integer.class), isA(Integer.class), isA(String.class), isA(String.class));
 
-        mvc.perform(post("/admin/schedules/save")
+        mvc.perform(put("/admin/schedules/save")
                         .param("scheduleId", "1")
+                        .param("courseId", "1")
+                        .param("startTime", "2023-03-26T09:00")
+                        .param("endTime", "2023-03-26T09:45")
+                        .with(csrf()))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @CustomWithMockUser(username = "admin", roles = {"ROLE_ADMIN"}, firstName = "John", lastName = "Doe")
+    void adminSchedulesPageAdd() throws Exception {
+        given(courseService.findCourseById(1)).willReturn(Source.course);
+        doNothing().when(scheduleService).saveOrUpdate(isA(Integer.class), isA(Integer.class), isA(String.class), isA(String.class));
+
+        mvc.perform(post("/admin/schedules/add")
                         .param("courseId", "1")
                         .param("startTime", "2023-03-26T09:00")
                         .param("endTime", "2023-03-26T09:45")
@@ -164,7 +210,7 @@ class AdminControllerTest {
         given(scheduleService.findScheduleById(1)).willReturn(Source.schedule1);
         doNothing().when(scheduleService).remove(isA(Schedule.class));
 
-        mvc.perform(post("/admin/schedules/delete")
+        mvc.perform(delete("/admin/schedules/delete")
                 .param("deleteScheduleId", "1")
                 .with(csrf()))
                 .andExpect(status().is3xxRedirection());
