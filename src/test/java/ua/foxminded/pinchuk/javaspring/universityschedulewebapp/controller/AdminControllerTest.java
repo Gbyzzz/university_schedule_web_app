@@ -1,6 +1,7 @@
 package ua.foxminded.pinchuk.javaspring.universityschedulewebapp.controller;
 
-import org.junit.jupiter.api.Test;
+import org.checkerframework.checker.units.qual.C;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,22 +9,27 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.IntegrationTestBase;
 import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.Source;
 import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.bean.AppUser;
 import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.bean.Course;
 import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.bean.Schedule;
+import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.repository.CourseRepository;
+import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.repository.ScheduleRepository;
+import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.repository.UserRepository;
 import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.service.CourseService;
 import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.service.ScheduleService;
 import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.service.UserService;
-import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.service.exception.UniversityServiceException;
 import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.utils.CustomWithMockUser;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -31,35 +37,45 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(AdminController.class)
-class AdminControllerTest {
+//@WebMvcTest(AdminController.class)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+class AdminControllerTest extends IntegrationTestBase {
 
     @Autowired
     private MockMvc mvc;
 
-    @MockBean
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
     private UserService userService;
 
-    @MockBean
+    @Autowired
+    private CourseRepository courseRepository;
+
+    @Autowired
     private CourseService courseService;
-    @MockBean
+
+    @Autowired
+    private ScheduleRepository scheduleRepository;
+
+    @Autowired
     private ScheduleService scheduleService;
 
     @Test
+    @Order(1)
     @CustomWithMockUser(username = "admin", roles = {"ROLE_ADMIN"}, firstName = "John", lastName = "Doe")
     void adminUsersPage() throws Exception {
-        given(userService.findAll()).willReturn(Source.users);
 
         mvc.perform(get("/admin/users"))
                 .andExpect(model().attribute("users", Source.users));
     }
 
     @Test
+    @Order(2)
     @CustomWithMockUser(username = "admin", roles = {"ROLE_ADMIN"}, firstName = "John", lastName = "Doe")
     void adminCoursesPage() throws Exception {
-        given(courseService.findAll()).willReturn(Source.courses);
-        given(userService.findAllByRole(AppUser.Role.ROLE_TEACHER)).willReturn(Source.teachers);
-        given(userService.findAllByRole(AppUser.Role.ROLE_STUDENT)).willReturn(Source.students);
 
         mvc.perform(get("/admin/courses"))
                 .andExpect(model().attribute("courses", Source.courses))
@@ -68,102 +84,127 @@ class AdminControllerTest {
     }
 
     @Test
+    @Order(3)
     @CustomWithMockUser(username = "admin", roles = {"ROLE_ADMIN"}, firstName = "John", lastName = "Doe")
     void adminSchedulesPage() throws Exception {
-        given(courseService.findAll()).willReturn(Source.courses);
-        mvc.perform(get("/admin/courses"))
+
+        mvc.perform(get("/admin/schedules"))
                 .andExpect(model().attribute("courses", Source.courses));
     }
 
     @Test
-    @WithMockUser(username="admin", authorities={"ROLE_ADMIN"})
+    @Order(4)
+    @WithMockUser(username = "admin", authorities = {"ROLE_ADMIN"})
     void adminUserSave() throws Exception {
-        given(userService.findUserById(2)).willReturn(Source.appUser2);
-        doNothing().when(userService).saveOrUpdate(isA(int.class), isA(String.class), isA(String.class), isA(String.class), isA(String.class), isA(String.class), isA(String.class));
+       Source.users.get(6).setFirstName("Adam");;
 
         mvc.perform(put("/admin/users/save")
-                .param("userId", "2")
-                .param("firstName", "Adam")
-                .param("lastName", "Thompson")
-                .param("email", "student5@university.com")
-                .param("role", "ROLE_STUDENT")
-                .param("phone", "164321")
+                        .param("userId", "7")
+                        .param("firstName", "Adam")
+                        .param("lastName", "Taylor")
+                        .param("email", "student4@university.com")
+                        .param("role", "ROLE_STUDENT")
+                        .param("phone", "7654348946")
                         .with(csrf()))
                 .andExpect(status().is3xxRedirection());
+        assertThat(Source.users).hasSameElementsAs(userRepository.findAll());
+        assertThat(Source.users).hasSameElementsAs(userService.findAll());
     }
 
     @Test
-    @WithMockUser(username="admin", authorities={"ROLE_ADMIN"})
+    @Order(5)
+    @WithMockUser(username = "admin", authorities = {"ROLE_ADMIN"})
     void adminUserAdd() throws Exception {
-        given(userService.findUserById(2)).willReturn(Source.appUser2);
-        doNothing().when(userService).saveOrUpdate(isA(Integer.class), isA(String.class), isA(String.class), isA(String.class), isA(String.class), isA(String.class), isA(String.class));
+        AppUser newUser = new AppUser(8, "student5@university.com",
+                "$2a$10$kTtZAqCVvwUk0V3q3igTj.isbnf9xhGNIY/Tnn6TPJZYmlSc4lo.m",
+                "Johnny", "Thompson", AppUser.Role.ROLE_STUDENT, "1654321");
+        Source.users.add(newUser);
+        Source.students.add(newUser);
 
         mvc.perform(post("/admin/users/add")
-                        .param("firstName", "Adam")
+                        .param("firstName", "Johnny")
                         .param("lastName", "Thompson")
                         .param("email", "student5@university.com")
                         .param("role", "ROLE_STUDENT")
                         .param("password", "132435")
-                        .param("phone", "164321")
+                        .param("phone", "1654321")
                         .with(csrf()))
                 .andExpect(status().is3xxRedirection());
+        assertThat(Source.users).hasSameElementsAs(userRepository.findAll());
+        assertThat(Source.users).hasSameElementsAs(userService.findAll());
     }
 
     @Test
-    @WithMockUser(username="admin", authorities={"ROLE_TEACHER","ROLE_ADMIN"})
+    @Order(6)
+    @WithMockUser(username = "admin", authorities = {"ROLE_TEACHER", "ROLE_ADMIN"})
     void adminCoursesPageSave() throws Exception {
-        given(userService.findUserById(1)).willReturn(Source.appUser1);
-        given(userService.findUserById(2)).willReturn(Source.appUser2);
-        given(userService.findUserById(3)).willReturn(Source.appUser3);
-        doNothing().when(courseService).saveOrUpdate(isA(Integer.class), isA(String.class), isA(String.class), isA(int[].class),isA(int.class));
+        Source.courses.get(Source.courses.indexOf(new Course(2, "Biology",
+                "Biology lessons", Source.users.get(2),
+                Arrays.asList(Source.users.get(4), Source.users.get(5), Source.users.get(6)))))
+                .setCourseName("Bio");
+
 
         mvc.perform(put("/admin/courses/save")
                         .param("courseId", "2")
-                        .param("courseName", "Course1")
-                        .param("description", "Course1")
-                        .param("studentId", "2", "3")
-                        .param("teacherId", "1")
+                        .param("courseName", "Bio")
+                        .param("description", "Biology lessons")
+                        .param("studentId", "5", "6", "7")
+                        .param("teacherId", "3")
                         .with(csrf()))
                 .andExpect(status().is3xxRedirection());
+        List<Course> courses = courseRepository.findAll();
+        List<Course> courses1 = courseService.findAll();
+        assertThat(Source.courses).hasSameElementsAs(courseRepository.findAll());
+        assertThat(Source.courses).hasSameElementsAs(courseService.findAll());
     }
 
     @Test
-    @WithMockUser(username="admin", authorities={"ROLE_TEACHER","ROLE_ADMIN"})
+    @Order(7)
+    @WithMockUser(username = "admin", authorities = {"ROLE_TEACHER", "ROLE_ADMIN"})
     void adminCoursesPageAdd() throws Exception {
-        given(userService.findUserById(1)).willReturn(Source.appUser1);
-        given(userService.findUserById(2)).willReturn(Source.appUser2);
-        given(userService.findUserById(3)).willReturn(Source.appUser3);
-        doNothing().when(courseService).saveOrUpdate(isA(Integer.class), isA(String.class), isA(String.class), isA(int[].class),isA(int.class));
-
+        Source.courses.add(
+                new Course(3, "Course1", "Course1",
+                        Source.users.get(1), new ArrayList<>() {{
+                    add(Source.users.get(4));
+                    add(Source.users.get(6));
+                }}));
         mvc.perform(post("/admin/courses/add")
                         .param("courseName", "Course1")
                         .param("description", "Course1")
-                        .param("studentId", "2", "3")
-                        .param("teacherId", "1")
+                        .param("studentId", "5", "7")
+                        .param("teacherId", "2")
                         .with(csrf()))
                 .andExpect(status().is3xxRedirection());
+        assertThat(Source.courses).hasSameElementsAs(courseRepository.findAll());
+        assertThat(Source.courses).hasSameElementsAs(courseService.findAll());
     }
 
     @Test
-    @WithMockUser(username="admin", authorities={"ROLE_TEACHER","ROLE_ADMIN"})
+    @Order(8)
+    @WithMockUser(username = "admin", authorities = {"ROLE_TEACHER", "ROLE_ADMIN"})
     void adminCoursesPageDelete() throws Exception {
-        given(courseService.findCourseById(1)).willReturn(Source.course);
-        doNothing().when(courseService).removeCourse(isA(Course.class));
+        Source.courses.remove(0);
+        Source.schedules.remove(4);
+        Source.schedules.remove(2);
+        Source.schedules.remove(0);
+
 
         mvc.perform(delete("/admin/courses/delete")
                         .param("deleteCourseId", "1")
                         .with(csrf()))
                 .andExpect(status().is3xxRedirection());
+        assertThat(Source.courses).hasSameElementsAs(courseRepository.findAll());
+        assertThat(Source.courses).hasSameElementsAs(courseService.findAll());
     }
 
 
     @ParameterizedTest
+    @Order(12)
     @CustomWithMockUser(username = "admin", roles = {"ROLE_ADMIN"}, firstName = "John", lastName = "Doe")
     @MethodSource("ua.foxminded.pinchuk.javaspring.universityschedulewebapp.Source#provideSchedules")
     void adminSchedulesPageGet(List<Schedule> schedules, AppUser appUser, LocalDate date, String type) throws Exception {
-        given(scheduleService.getScheduleByUser(appUser.getUserId(), date, type)).willReturn(schedules);
-        given(courseService.findAll()).willReturn(Source.courses);
-
+        List<Schedule> schedules1 = Source.schedules;
+        List<Schedule> schedules2 = scheduleRepository.findAll();
         mvc.perform(post("/admin/schedules/get")
                         .param("userId", String.valueOf(appUser.getUserId()))
                         .param("date", date.toString())
@@ -176,43 +217,57 @@ class AdminControllerTest {
     }
 
     @Test
+    @Order(9)
     @CustomWithMockUser(username = "admin", roles = {"ROLE_ADMIN"}, firstName = "John", lastName = "Doe")
     void adminSchedulesPageSave() throws Exception {
-        given(courseService.findCourseById(1)).willReturn(Source.course);
-        doNothing().when(scheduleService).saveOrUpdate(isA(Integer.class), isA(Integer.class), isA(String.class), isA(String.class));
-
+        Source.schedules.get(
+                Source.schedules.indexOf(new Schedule(2, Source.courses.get(0),
+                        Source.sdf.parse("2023-03-23 10:00"),
+                        Source.sdf.parse("2023-03-23 10:45"))))
+                .setEndTime(Source.sdf.parse("2023-03-23 11:00"));
         mvc.perform(put("/admin/schedules/save")
-                        .param("scheduleId", "1")
-                        .param("courseId", "1")
-                        .param("startTime", "2023-03-26T09:00")
-                        .param("endTime", "2023-03-26T09:45")
+                        .param("scheduleId", "2")
+                        .param("courseId", "2")
+                        .param("startTime", "2023-03-23T10:00")
+                        .param("endTime", "2023-03-23T11:00")
                         .with(csrf()))
                 .andExpect(status().isOk());
+        List<Schedule> schedules = scheduleRepository.findAll();
+        assertThat(Source.schedules).hasSameElementsAs(scheduleRepository.findAll());
     }
 
     @Test
+    @Order(10)
     @CustomWithMockUser(username = "admin", roles = {"ROLE_ADMIN"}, firstName = "John", lastName = "Doe")
     void adminSchedulesPageAdd() throws Exception {
-        given(courseService.findCourseById(1)).willReturn(Source.course);
-        doNothing().when(scheduleService).saveOrUpdate(isA(Integer.class), isA(Integer.class), isA(String.class), isA(String.class));
+        Source.schedules.add(new Schedule(8,  Source.courses.get(0),
+                Source.sdf.parse("2023-04-26 09:00"),
+                Source.sdf.parse("2023-04-26 09:45")));
 
         mvc.perform(post("/admin/schedules/add")
-                        .param("courseId", "1")
-                        .param("startTime", "2023-03-26T09:00")
-                        .param("endTime", "2023-03-26T09:45")
+                        .param("courseId", "2")
+                        .param("startTime", "2023-04-26T09:00")
+                        .param("endTime", "2023-04-26T09:45")
                         .with(csrf()))
                 .andExpect(status().isOk());
+        List<Schedule> schedules = scheduleRepository.findAll();
+        assertThat(Source.schedules).hasSameElementsAs(scheduleRepository.findAll());
     }
 
     @Test
-    @WithMockUser(username="admin", authorities={"ROLE_TEACHER","ROLE_ADMIN"})
+    @Order(11)
+    @WithMockUser(username = "admin", authorities = {"ROLE_TEACHER", "ROLE_ADMIN"})
     void adminSchedulesPageDelete() throws Exception {
-        given(scheduleService.findScheduleById(1)).willReturn(Source.schedule1);
-        doNothing().when(scheduleService).remove(isA(Schedule.class));
+        Source.schedules.remove(Source.schedules.indexOf(
+                new Schedule(6, Source.courses.get(0),
+                        Source.sdf.parse("2023-03-26 10:00"),
+                        Source.sdf.parse("2023-03-26 10:45"))));
 
         mvc.perform(delete("/admin/schedules/delete")
-                .param("deleteScheduleId", "1")
-                .with(csrf()))
+                        .param("deleteScheduleId", "6")
+                        .with(csrf()))
                 .andExpect(status().is3xxRedirection());
+        List<Schedule> schedules = scheduleRepository.findAll();
+        assertThat(Source.schedules).hasSameElementsAs(scheduleRepository.findAll());
     }
 }

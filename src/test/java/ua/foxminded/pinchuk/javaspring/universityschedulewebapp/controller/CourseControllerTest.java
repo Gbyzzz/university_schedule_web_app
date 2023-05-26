@@ -6,6 +6,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.IntegrationTestBase;
 import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.Source;
 import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.bean.Course;
 import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.service.CourseService;
@@ -19,21 +20,16 @@ import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 
-@WebMvcTest(CourseController.class)
-class CourseControllerTest {
+//@WebMvcTest(CourseController.class)
+class CourseControllerTest extends IntegrationTestBase {
     @Autowired
     private MockMvc mvc;
-
-    @MockBean
-    private CourseService courseService;
 
     @Test
     @CustomWithMockUser(username = "admin", roles = {"ROLE_ADMIN"}, firstName = "John", lastName = "Doe")
     void getAllCourses() throws Exception {
-        List<Course> courseList = Arrays.asList(Source.course);
-        given(courseService.findAll()).willReturn(courseList);
 
         mvc.perform(get("/courses/all"))
-                .andExpect(model().attribute("courses", courseList));
+                .andExpect(model().attribute("courses", Source.courses));
     }
 }

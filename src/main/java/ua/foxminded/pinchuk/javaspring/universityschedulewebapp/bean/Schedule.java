@@ -12,7 +12,7 @@ public class Schedule {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int scheduleId;
+    private Integer scheduleId;
 
     @OneToOne()
     @JoinColumn(name = "course_id")
@@ -29,18 +29,18 @@ public class Schedule {
     public Schedule() {
     }
 
-    public Schedule(int scheduleId, Course course, Date startTime, Date endTime) {
+    public Schedule(Integer scheduleId, Course course, Date startTime, Date endTime) {
         this.scheduleId = scheduleId;
         this.course = course;
         this.startTime = startTime;
         this.endTime = endTime;
     }
 
-    public int getScheduleId() {
+    public Integer getScheduleId() {
         return scheduleId;
     }
 
-    public void setScheduleId(int scheduleId) {
+    public void setScheduleId(Integer scheduleId) {
         this.scheduleId = scheduleId;
     }
 
@@ -73,7 +73,10 @@ public class Schedule {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Schedule schedule = (Schedule) o;
-        return scheduleId == schedule.scheduleId && Objects.equals(course, schedule.course) && Objects.equals(startTime, schedule.startTime) && Objects.equals(endTime, schedule.endTime);
+        return scheduleId == schedule.scheduleId &&
+                Objects.equals(course, schedule.course) &&
+                Objects.equals(startTime, schedule.startTime) &&
+                Objects.equals(endTime, schedule.endTime);
     }
 
     @Override

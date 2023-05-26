@@ -44,7 +44,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void saveOrUpdate(Integer userId, String password, String firstName, String lastName, String email, String role, String phone) throws UniversityServiceException {
+    public void saveOrUpdate(Integer userId, String password, String firstName,
+                             String lastName, String email, String role,
+                             String phone) throws UniversityServiceException {
         AppUser user;
         if(userId != null){
             user = findUserById(userId);

@@ -14,6 +14,7 @@ import java.util.Objects;
 @Table(name = "users")
 @Entity
 public class AppUser implements UserDetails {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
@@ -146,7 +147,6 @@ public class AppUser implements UserDetails {
         if (o == null || getClass() != o.getClass()) return false;
         AppUser appUser = (AppUser) o;
         return userId == appUser.userId && Objects.equals(email, appUser.email) &&
-                Objects.equals(password, appUser.password) &&
                 Objects.equals(firstName, appUser.firstName) &&
                 Objects.equals(lastName, appUser.lastName) &&
                 userRole == appUser.userRole &&
