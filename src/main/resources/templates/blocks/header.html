@@ -4,7 +4,11 @@
 <div th:fragment="header">
 <div class="row"  sec:authorize="isAuthenticated()">
     <span class="m-lg-3">Hi,
-        <span sec:authentication="name">
+        <span sec:authentication="principal.firstName">
+        </span>
+        <span>
+        </span>
+        <span sec:authentication="principal.lastName">
         </span>
          </span>
 </div>

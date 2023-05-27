@@ -15,17 +15,17 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.bean.AppUser;
-import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.service.UserService;
+import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.repository.UserRepository;
 
 
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfiguration {
-    private final UserService userService;
+    private final UserRepository userRepository;
 
-    public SecurityConfiguration(UserService userService) {
-        this.userService = userService;
+    public SecurityConfiguration(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     @Bean
@@ -45,7 +45,7 @@ public class SecurityConfiguration {
 
     @Bean
     public UserDetailsService userDetailsService() {
-        return email -> userService.findUserByEmail(email).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        return email -> userRepository.findUserByEmail(email).orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 
     @Bean

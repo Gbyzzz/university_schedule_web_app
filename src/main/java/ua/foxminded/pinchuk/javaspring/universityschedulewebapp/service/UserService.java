@@ -15,5 +15,5 @@ public interface UserService {
 
     List<AppUser> findAllByRole(AppUser.Role role);
 
-    void saveOrUpdate(int userId, String firstName, String lastName, String email, String role, String phone) throws UniversityServiceException;
+    void saveOrUpdate(Integer userId, String password, String firstName, String lastName, String email, String role, String phone) throws UniversityServiceException;
 }
