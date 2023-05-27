@@ -1,15 +1,19 @@
 package ua.foxminded.pinchuk.javaspring.universityschedulewebapp.service;
 
-import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.bean.User;
+import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.bean.AppUser;
 import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.service.exception.UniversityServiceException;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface UserService {
-    User findUserById(int id) throws UniversityServiceException;
+    AppUser findUserById(int id) throws UniversityServiceException;
 
-    void saveOrUpdate(User user);
+    List<AppUser> findAll();
 
-    List<User> findAll();
+    Optional<AppUser> findUserByEmail(String email);
+
+    List<AppUser> findAllByRole(AppUser.Role role);
+
+    void saveOrUpdate(int userId, String firstName, String lastName, String email, String role, String phone) throws UniversityServiceException;
 }

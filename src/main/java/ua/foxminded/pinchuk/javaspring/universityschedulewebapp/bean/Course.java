@@ -19,21 +19,21 @@ public class Course {
     @Column(name = "description")
     private String description;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.DETACH, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinTable(name = "teacher_course", joinColumns = {@JoinColumn(name = "course_id")},
     inverseJoinColumns = {@JoinColumn(name = "user_id")})
-    private User teacher;
+    private AppUser teacher;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.DETACH, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinTable(name = "student_course", joinColumns = {@JoinColumn(name = "course_id")},
             inverseJoinColumns = {@JoinColumn(name = "user_id")})
-    private List<User> students;
+    private List<AppUser> students;
 
     public Course() {
     }
 
     public Course(int courseId, String courseName, String description,
-                  User teacher, List<User> students) {
+                  AppUser teacher, List<AppUser> students) {
         this.courseId = courseId;
         this.courseName = courseName;
         this.description = description;
@@ -65,19 +65,19 @@ public class Course {
         this.description = description;
     }
 
-    public User getTeacher() {
+    public AppUser getTeacher() {
         return teacher;
     }
 
-    public void setTeacher(User teacher) {
+    public void setTeacher(AppUser teacher) {
         this.teacher = teacher;
     }
 
-    public List<User> getStudents() {
+    public List<AppUser> getStudents() {
         return students;
     }
 
-    public void setStudents(List<User> students) {
+    public void setStudents(List<AppUser> students) {
         this.students = students;
     }
 

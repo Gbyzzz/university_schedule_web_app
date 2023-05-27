@@ -6,10 +6,12 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.Source;
+import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.bean.AppUser;
 import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.bean.Schedule;
-import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.bean.User;
 import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.service.ScheduleService;
 import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.service.UserService;
 
@@ -17,10 +19,10 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 
 @WebMvcTest(ScheduleController.class)
 class ScheduleControllerTest {
@@ -34,25 +36,17 @@ class ScheduleControllerTest {
     @MockBean
     private UserService userService;
 
-    @Test
-    void cocktailsPage() throws Exception {
-        List<Schedule> scheduleList = Arrays.asList(Source.schedule1, Source.schedule2);
-        given(scheduleService.getAll()).willReturn(scheduleList);
-
-        mvc.perform(get("/schedule"))
-                .andExpect(model().attribute("all_schedules", scheduleList));
-    }
-
     @ParameterizedTest
+    @WithMockUser(username="admin", authorities={"ROLE_TEACHER","ROLE_ADMIN"})
     @MethodSource("ua.foxminded.pinchuk.javaspring.universityschedulewebapp.Source#provideSchedules")
-    void getAllMonthScheduleByUserId(List<Schedule> schedules, User user, LocalDate date, String type) throws Exception {
-        given(scheduleService.getDayScheduleByUser(user, date)).willReturn(schedules);
-        given(userService.findUserById(user.getUserId())).willReturn(user);
+    void getAllMonthScheduleByUserId(List<Schedule> schedules, AppUser appUser, LocalDate date, String type) throws Exception {
+        given(scheduleService.getScheduleByUser(appUser.getUserId(), date, type)).willReturn(schedules);
+        given(userService.findUserById(appUser.getUserId())).willReturn(appUser);
 
-        mvc.perform(get("/schedule/get")
-                        .param("userId", String.valueOf(user.getUserId()))
+        mvc.perform(get("/schedules/get")
+                        .param("userId", String.valueOf(appUser.getUserId()))
                         .param("date", date.toString())
                         .param("type", type))
-                .andExpect(model().attributeExists("schedules"));
+                .andExpect(model().attribute("schedules", schedules));
     }
 }

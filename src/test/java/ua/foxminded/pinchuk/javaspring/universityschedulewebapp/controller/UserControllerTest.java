@@ -4,11 +4,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.Source;
-import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.bean.Course;
-import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.bean.User;
-import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.service.CourseService;
+import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.bean.AppUser;
 import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.service.UserService;
 
 import java.util.Arrays;
@@ -29,11 +28,12 @@ class UserControllerTest {
     private UserService userService;
 
     @Test
+    @WithMockUser(username="admin", authorities={"ROLE_TEACHER","ROLE_ADMIN"})
     void getAllUsers() throws Exception {
-        List<User> userList = Arrays.asList(Source.user1, Source.user2, Source.user3);
-        given(userService.findAll()).willReturn(userList);
+        List<AppUser> appUserList = Arrays.asList(Source.appUser1, Source.appUser2, Source.appUser3);
+        given(userService.findAll()).willReturn(appUserList);
 
         mvc.perform(get("/users/all"))
-                .andExpect(model().attribute("users", userList));
+                .andExpect(model().attribute("users", appUserList));
     }
 }

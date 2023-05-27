@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.Source;
 import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.bean.Course;
@@ -12,15 +13,13 @@ import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.service.CourseSe
 import java.util.Arrays;
 import java.util.List;
 
-
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 
 @WebMvcTest(CourseController.class)
 class CourseControllerTest {
-
     @Autowired
     private MockMvc mvc;
 
@@ -28,6 +27,7 @@ class CourseControllerTest {
     private CourseService courseService;
 
     @Test
+    @WithMockUser(username="admin", authorities={"ROLE_TEACHER","ROLE_ADMIN"})
     void getAllCourses() throws Exception {
         List<Course> courseList = Arrays.asList(Source.course);
         given(courseService.findAll()).willReturn(courseList);

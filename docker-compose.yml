@@ -1,0 +1,20 @@
+version: "3.8"
+
+services:
+  postgres:
+    build: ./db
+    ports:
+      - "5433:5432"
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: university_web_app_db
+  backend:
+    build: ./
+    depends_on:
+      - "postgres"
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/university_web_app_db

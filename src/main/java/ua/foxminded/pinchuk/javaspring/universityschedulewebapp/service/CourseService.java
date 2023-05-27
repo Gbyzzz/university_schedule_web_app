@@ -9,7 +9,7 @@ import java.util.Optional;
 public interface CourseService {
 
     Course findCourseById(int id) throws UniversityServiceException;
-    void saveOrUpdate(Course course);
+    void saveOrUpdate(Integer courseId, String name, String description, int[] studentsId, int teacherId) throws UniversityServiceException;
 
     void removeCourse(Course course);
     List<Course> findAll();

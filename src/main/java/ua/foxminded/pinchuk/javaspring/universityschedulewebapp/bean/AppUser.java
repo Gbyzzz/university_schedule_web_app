@@ -1,12 +1,19 @@
 package ua.foxminded.pinchuk.javaspring.universityschedulewebapp.bean;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.Type;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.bean.converter.TypeConverter;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 
 @Table(name = "users")
 @Entity
-public class User {
+public class AppUser implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
@@ -25,17 +32,18 @@ public class User {
     private String lastName;
 
     @Column(name = "role")
+    @Type(TypeConverter.class)
     @Enumerated(EnumType.STRING)
     private Role userRole;
 
     @Column(name = "phone")
     private String phone;
 
-    public User() {
+    public AppUser() {
     }
 
-    public User(int userId, String email, String password, String firstName,
-                String lastName, Role userRole, String phone) {
+    public AppUser(int userId, String email, String password, String firstName,
+                   String lastName, Role userRole, String phone) {
         this.userId = userId;
         this.email = email;
         this.password = password;
@@ -61,8 +69,39 @@ public class User {
         this.email = email;
     }
 
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of( new SimpleGrantedAuthority(userRole.name()));
+    }
+
+    @Override
     public String getPassword() {
         return password;
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 
     public void setPassword(String password) {
@@ -105,13 +144,13 @@ public class User {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return userId == user.userId && Objects.equals(email, user.email) &&
-                Objects.equals(password, user.password) &&
-                Objects.equals(firstName, user.firstName) &&
-                Objects.equals(lastName, user.lastName) &&
-                userRole == user.userRole &&
-                Objects.equals(phone, user.phone);
+        AppUser appUser = (AppUser) o;
+        return userId == appUser.userId && Objects.equals(email, appUser.email) &&
+                Objects.equals(password, appUser.password) &&
+                Objects.equals(firstName, appUser.firstName) &&
+                Objects.equals(lastName, appUser.lastName) &&
+                userRole == appUser.userRole &&
+                Objects.equals(phone, appUser.phone);
     }
 
     @Override

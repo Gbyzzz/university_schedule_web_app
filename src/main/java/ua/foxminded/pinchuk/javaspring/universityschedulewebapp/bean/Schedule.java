@@ -14,7 +14,7 @@ public class Schedule {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int scheduleId;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne()
     @JoinColumn(name = "course_id")
     private Course course;
 

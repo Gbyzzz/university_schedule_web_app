@@ -1,4 +1,16 @@
-<nav th:fragment="header" class="navbar navbar-expand-sm navbar-light bg-light sticky-top">
+<html lang="es" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<div th:fragment="header">
+<div class="row"  sec:authorize="isAuthenticated()">
+    <span class="m-lg-3">Hi,
+        <span sec:authentication="name">
+        </span>
+         </span>
+</div>
+
+<nav class="navbar navbar-expand-sm navbar-light bg-light sticky-top">
+    <br>
     <div class="container-fluid">
         <form action="/" method="get">
             <a href="#" class="navbar-brand" onclick="this.parentNode.submit()">University</a>
@@ -8,7 +20,7 @@
         </button>
         <div class="collapse navbar-collapse" id="mynavbar">
             <ul class="navbar-nav me-auto">
-                <li class="nav-item">
+                <li class="nav-item" sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_TEACHER')">
                     <form action="/users/all" method="get">
                         <a href="#" class="nav-link" onclick="this.parentNode.submit()">Users</a>
                     </form>
@@ -19,11 +31,29 @@
                     </form>
                 </li>
                 <li class="nav-item">
-                    <form action="/schedule" method="get">
+                    <form action="/schedules" method="get">
                         <a href="#" class="nav-link" onclick="this.parentNode.submit()">Schedule</a>
                     </form>
                 </li>
             </ul>
+            <form action="/admin" sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_TEACHER')">
+                <button type="submit" class="btn btn-dark me-3">
+                    User page
+                </button>
+            </form>
+
+            <form action="/logout" sec:authorize="isAuthenticated()">
+                <button type="submit" class="btn btn-dark me-3">
+                    Logout
+                </button>
+            </form>
+            <form action="/login" sec:authorize="!isAuthenticated()">
+                <button type="submit" class="btn btn-dark me-3">
+                    Sign In
+                </button>
+            </form>
         </div>
     </div>
 </nav>
+</div>
+</html>

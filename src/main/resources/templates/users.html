@@ -1,4 +1,5 @@
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <script src="/webjars/jquery/5.2.3/jquery.min.js"></script>
     <script src="/webjars/bootstrap/5.2.3/js/bootstrap.min.js"></script>
@@ -22,13 +23,13 @@
     </tr>
     </thead>
     <tbody>
-    <tr th:each="user : ${users}">
-        <th th:text="${user.userId}"/>
-        <td th:text="${user.firstName}"/>
-        <td th:text="${user.lastName}"/>
-        <td th:text="${user.email}"/>
-        <td th:text="${user.userRole}"/>
-        <td th:text="${user.phone}"/>
+    <tr th:each="appUser : ${users}">
+        <th th:text="${appUser.userId}"/>
+        <td th:text="${appUser.firstName}"/>
+        <td th:text="${appUser.lastName}"/>
+        <td th:text="${appUser.email}"/>
+        <td th:text="${appUser.userRole}"/>
+        <td th:text="${appUser.phone}"/>
     </tr>
     </tbody>
 </table>

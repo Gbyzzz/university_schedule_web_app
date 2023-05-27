@@ -4,7 +4,7 @@ CREATE TABLE users
 (
     user_id bigserial PRIMARY KEY,
     email varchar(256) UNIQUE NOT NULL,
-    password varchar(50) NOT NULL,
+    password varchar(200) NOT NULL,
     first_name varchar(15) DEFAULT NULL,
     last_name varchar(30) DEFAULT NULL,
     role university_web_app_user_role NOT NULL DEFAULT 'ROLE_STUDENT',
@@ -12,13 +12,13 @@ CREATE TABLE users
 );
 
 INSERT INTO users
-VALUES (1, 'johnsmith@university.com', '132435', 'John', 'Smith', 'ROLE_ADMIN', '138765487'),
-       (2, 'tomgreen@university.com', '132435', 'Tom', 'Green', 'ROLE_TEACHER', '135481314'),
-       (3, 'anthonynewman@university.com', '132435', 'Anthony', 'Newman', 'ROLE_TEACHER', '846321871'),
-       (4, 'kimfoster@university.com', '132435', 'Kimberly', 'Foster', 'ROLE_STUDENT', '9318431812'),
-       (5, 'danieljones@university.com', '132435', 'Daniel', 'Jones', 'ROLE_STUDENT', '7313544342'),
-       (6, 'williambrown@university.com', '132435', 'William', 'Brown', 'ROLE_STUDENT', '3246841321'),
-       (7, 'edwardtaylor@university.com', '132435', 'Edward', 'Taylor', 'ROLE_STUDENT', '7654348946');
+VALUES (1, 'admin@university.com', '$2a$10$kTtZAqCVvwUk0V3q3igTj.isbnf9xhGNIY/Tnn6TPJZYmlSc4lo.m', 'John', 'Smith', 'ROLE_ADMIN', '138765487'),
+       (2, 'teacher1@university.com', '$2a$10$kTtZAqCVvwUk0V3q3igTj.isbnf9xhGNIY/Tnn6TPJZYmlSc4lo.m', 'Tom', 'Green', 'ROLE_TEACHER', '135481314'),
+       (3, 'teacher2@university.com', '$2a$10$kTtZAqCVvwUk0V3q3igTj.isbnf9xhGNIY/Tnn6TPJZYmlSc4lo.m', 'Anthony', 'Newman', 'ROLE_TEACHER', '846321871'),
+       (4, 'student1@university.com', '$2a$10$kTtZAqCVvwUk0V3q3igTj.isbnf9xhGNIY/Tnn6TPJZYmlSc4lo.m', 'Kimberly', 'Foster', 'ROLE_STUDENT', '9318431812'),
+       (5, 'student2@university.com', '$2a$10$kTtZAqCVvwUk0V3q3igTj.isbnf9xhGNIY/Tnn6TPJZYmlSc4lo.m', 'Daniel', 'Jones', 'ROLE_STUDENT', '7313544342'),
+       (6, 'student3@university.com', '$2a$10$kTtZAqCVvwUk0V3q3igTj.isbnf9xhGNIY/Tnn6TPJZYmlSc4lo.m', 'William', 'Brown', 'ROLE_STUDENT', '3246841321'),
+       (7, 'student4@university.com', '$2a$10$kTtZAqCVvwUk0V3q3igTj.isbnf9xhGNIY/Tnn6TPJZYmlSc4lo.m', 'Edward', 'Taylor', 'ROLE_STUDENT', '7654348946');
 
 SELECT setval('users_user_id_seq', (SELECT MAX(user_id) from "users"));
 
@@ -63,7 +63,7 @@ VALUES (1, 2),
 CREATE TABLE schedules
 (
     schedule_id bigserial PRIMARY KEY,
-    course_id bigint REFERENCES courses(course_id) ON DELETE CASCADE,
+    course_id bigint REFERENCES courses(course_id)  ON DELETE CASCADE,
     start_time timestamp NOT NULL,
     end_time timestamp NOT NULL
 );
@@ -76,3 +76,5 @@ VALUES (1, 1, '2023-03-23 09:00:00', '2023-03-23 09:45:00'),
        (5, 1, '2023-03-26 09:00:00', '2023-03-26 09:45:00'),
        (6, 2, '2023-03-26 10:00:00', '2023-03-26 10:45:00'),
        (7, 2, '2023-04-01 10:00:00', '2023-04-01 10:45:00');
+
+SELECT setval('schedules_schedule_id_seq', (SELECT MAX(schedule_id) from "schedules"));
