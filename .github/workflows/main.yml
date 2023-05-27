@@ -33,7 +33,7 @@ jobs:
         with:
           file: ./Dockerfile
           push: true
-          tags: user/app:latest
+          tags: gbyzzz/university_schedule_web_app:latest
           imageid: backend
       -
         name: Build and push
@@ -41,5 +41,5 @@ jobs:
         with:
           file: ./db/Dockerfile
           push: true
-          tags: user/app:latest
+          tags: gbyzzz/university_schedule_web_app:latest
           imageid: postgres
