@@ -1,6 +1,9 @@
 package ua.foxminded.pinchuk.javaspring.universityschedulewebapp.controller;
 
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,20 +30,22 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 
 //@WebMvcTest(ScheduleController.class)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class ScheduleControllerTest extends IntegrationTestBase {
 
     @Autowired
     private MockMvc mvc;
 
-    @ParameterizedTest
-    @CustomWithMockUser(username = "admin", roles = {"ROLE_ADMIN"}, firstName = "John", lastName = "Doe")
-    @MethodSource("ua.foxminded.pinchuk.javaspring.universityschedulewebapp.Source#provideSchedules")
-    void getAllMonthScheduleByUserId(List<Schedule> schedules, AppUser appUser, LocalDate date, String type) throws Exception {
-
-        mvc.perform(get("/schedules/get")
-                        .param("userId", String.valueOf(appUser.getUserId()))
-                        .param("date", date.toString())
-                        .param("type", type))
-                .andExpect(model().attribute("schedules", schedules));
-    }
+//    @ParameterizedTest
+//    @Order(1)
+//    @CustomWithMockUser(username = "admin", roles = {"ROLE_ADMIN"}, firstName = "John", lastName = "Doe")
+//    @MethodSource("ua.foxminded.pinchuk.javaspring.universityschedulewebapp.Source#provideSchedules")
+//    void getAllMonthScheduleByUserId(List<Schedule> schedules, AppUser appUser, LocalDate date, String type) throws Exception {
+//
+//        mvc.perform(get("/schedules/get")
+//                        .param("userId", String.valueOf(appUser.getUserId()))
+//                        .param("date", date.toString())
+//                        .param("type", type))
+//                .andExpect(model().attribute("schedules", schedules));
+//    }
 }

@@ -64,7 +64,6 @@ class AdminControllerTest extends IntegrationTestBase {
     private ScheduleService scheduleService;
 
     @Test
-    @Order(1)
     @CustomWithMockUser(username = "admin", roles = {"ROLE_ADMIN"}, firstName = "John", lastName = "Doe")
     void adminUsersPage() throws Exception {
 
