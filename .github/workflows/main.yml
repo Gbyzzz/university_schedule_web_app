@@ -31,7 +31,7 @@ jobs:
         name: Build and push
         uses: docker/build-push-action@v4
         with:
-          file: ./Dockerfile
+          file: ./
           push: true
           tags: gbyzzz/university_schedule_web_app:backend
         
@@ -39,6 +39,6 @@ jobs:
         name: Build and push
         uses: docker/build-push-action@v4
         with:
-          file: ./db/Dockerfile
+          file: ./db/
           push: true
           tags: gbyzzz/university_schedule_web_app:postgres
