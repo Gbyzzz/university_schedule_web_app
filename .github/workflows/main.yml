@@ -33,13 +33,12 @@ jobs:
         with:
           file: ./Dockerfile
           push: true
-          tags: gbyzzz/university_schedule_web_app:latest
-          imageid: backend
+          tags: gbyzzz/university_schedule_web_app:backend
+        
       -
         name: Build and push
         uses: docker/build-push-action@v4
         with:
           file: ./db/Dockerfile
           push: true
-          tags: gbyzzz/university_schedule_web_app:latest
-          imageid: postgres
+          tags: gbyzzz/university_schedule_web_app:postgres
