@@ -1,0 +1,41 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <script src="/webjars/jquery/5.2.3/jquery.min.js"></script>
+    <script src="/webjars/bootstrap/5.2.3/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="/webjars/bootstrap/5.2.3/css/bootstrap.min.css"/>
+    <title>University Schedule Web App</title>
+</head>
+<body>
+<header th:insert="blocks/header :: header"></header>
+
+<h3 class="text-center">Courses</h3>
+
+<table class="table">
+    <thead class="thead-dark">
+    <tr>
+        <th scope="col">#</th>
+        <th scope="col">Course Name</th>
+        <th scope="col">Description</th>
+        <th scope="col">Teacher</th>
+        <th scope="col" class="text-center">Students</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="course, iter : ${courses}">
+        <th th:text="${course.courseId}"/>
+        <td th:text="${course.courseName}"/>
+        <td th:text="${course.description}"/>
+        <td th:text="${course.teacher.firstName} + ' ' + ${course.teacher.lastName}"/>
+        <td>
+           <span th:each="student, iterStat : ${course.getStudents()}">
+          <span th:text="${student.firstName} + ' ' + ${student.lastName}"></span>
+          <span th:if="!${iterStat.last}">, </span>
+               </span>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+
+
+</html>

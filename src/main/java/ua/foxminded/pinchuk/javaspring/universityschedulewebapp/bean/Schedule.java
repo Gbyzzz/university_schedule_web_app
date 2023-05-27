@@ -2,7 +2,7 @@ package ua.foxminded.pinchuk.javaspring.universityschedulewebapp.bean;
 
 import jakarta.persistence.*;
 
-import java.sql.Date;
+import java.util.Date;
 import java.util.Objects;
 
 
@@ -19,11 +19,11 @@ public class Schedule {
     private Course course;
 
     @Column(name = "start_time")
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date startTime;
 
     @Column(name = "end_time")
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date endTime;
 
     public Schedule() {

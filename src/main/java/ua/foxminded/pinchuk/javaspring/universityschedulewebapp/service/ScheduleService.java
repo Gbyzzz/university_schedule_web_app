@@ -17,4 +17,5 @@ public interface ScheduleService {
     List<Schedule> getDayScheduleByUser(User user, LocalDate date);
 
     List<Schedule> getMonthScheduleByUser(User user, LocalDate date);
+    List<Schedule> getAll();
 }

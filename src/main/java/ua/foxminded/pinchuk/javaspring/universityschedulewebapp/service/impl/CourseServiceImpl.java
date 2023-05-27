@@ -7,6 +7,7 @@ import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.repository.Cours
 import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.service.CourseService;
 import ua.foxminded.pinchuk.javaspring.universityschedulewebapp.service.exception.UniversityServiceException;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -36,5 +37,10 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public void removeCourse(Course course) {
         courseRepository.delete(course);
+    }
+
+    @Override
+    public List<Course> findAll() {
+        return courseRepository.findAll();
     }
 }
