@@ -31,7 +31,7 @@ jobs:
         name: Build and push
         uses: docker/build-push-action@v4
         with:
-          file: ./
+          file: ./Dockerfile
           push: true
           tags: user/app:latest
           imageid: backend
@@ -39,7 +39,7 @@ jobs:
         name: Build and push
         uses: docker/build-push-action@v4
         with:
-          file: ./db
+          file: ./db/Dockerfile
           push: true
           tags: user/app:latest
           imageid: postgres
