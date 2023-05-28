@@ -47,17 +47,21 @@ jobs:
         uses: timheuer/base64-to-file@v1.2
         with:
           fileName: 'key.pem'
+          fileDir: './'
           encodedString: ${{ secrets.KEY }}
       - name: executing remote ssh commands using password
         uses: appleboy/ssh-action@v0.1.10
         with:
           host: ${{ secrets.HOST }}
           username: ec2-user
-          key_path: ${{ steps.write_file.outputs.filePath }}
+          key_path: './key.pem'
           script: |
             docker login
             docker pull gbyzzz/university_schedule_web_app
             docker stop backend
             docker rm backend
             docker run --detach -name backend -p 443:8080 -e SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/university_web_app_db 
+      - name: rm
+        with:
+          script: rm ./key.pem
             
