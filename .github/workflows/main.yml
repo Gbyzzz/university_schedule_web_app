@@ -53,7 +53,7 @@ jobs:
         with:
           host: ${{ secrets.HOST }}
           username: ec2-user
-          key: ${{ steps.write_file.outputs.filePath. }}
+          key: ${{ steps.write_file.outputs.filePath }}
           script: |
             docker login
             docker pull gbyzzz/university_schedule_web_app
