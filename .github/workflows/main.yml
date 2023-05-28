@@ -43,12 +43,17 @@ jobs:
           context: ./db
           push: true
           tags: gbyzzz/university_schedule_web_app:postgres
+      - name: Run Workflow
+        uses: timheuer/base64-to-file@v1.2
+        with:
+          fileName: 'key.pem'
+          encodedString: ${{ secrets.KEY }}
       - name: executing remote ssh commands using password
         uses: appleboy/ssh-action@v0.1.10
         with:
           host: ${{ secrets.HOST }}
           username: ec2-user
-          key: ${{ secrets.KEY }}
+          key: ${{ steps.write_file.outputs.filePath. }}
           script: |
             docker login
             docker pull gbyzzz/university_schedule_web_app
