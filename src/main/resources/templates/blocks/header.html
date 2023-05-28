@@ -2,8 +2,9 @@
       xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <div th:fragment="header">
-<div class="row"  sec:authorize="isAuthenticated()">
-    <span class="m-lg-3">Hi,
+
+<div class="m-3" sec:authorize="isAuthenticated()">
+    <span>Hi,
         <span sec:authentication="principal.firstName">
         </span>
         <span>
