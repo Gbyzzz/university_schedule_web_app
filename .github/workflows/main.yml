@@ -43,24 +43,22 @@ jobs:
           context: ./db
           push: true
           tags: gbyzzz/university_schedule_web_app:postgres
-      - name: Run Workflow
+      - name: Get key
         uses: timheuer/base64-to-file@v1.2
         with:
           fileName: 'key.pem'
           fileDir: './'
           encodedString: ${{ secrets.KEY }}
-      - name: executing remote ssh commands using password
+      - name: Executing remote ssh commands using password
         uses: appleboy/ssh-action@v0.1.10
         with:
           host: ${{ secrets.HOST }}
           username: ec2-user
           key_path: './key.pem'
           script: |
-            docker login
-            docker pull gbyzzz/university_schedule_web_app
-            docker stop backend
-            docker rm backend
-            docker run --detach -name backend -p 443:8080 -e SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/university_web_app_db 
-      - name: remove key
+            sudo docker rm -f backend
+            sudo docker rmi gbyzzz/university_schedule_web_app:backend
+            sudo docker run --detach --restart always --name backend -p 80:8080 -e SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/university_web_app_db --network mynetwork gbyzzz/university_schedule_web_app:backend
+      - name: Remove key
         run: rm key.pem
             
