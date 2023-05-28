@@ -61,7 +61,7 @@ jobs:
             docker stop backend
             docker rm backend
             docker run --detach -name backend -p 443:8080 -e SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/university_web_app_db 
-      - name: rm
+      - name: remove key
         with:
-          script: rm ./key.pem
+          script: rm key.pem
             
