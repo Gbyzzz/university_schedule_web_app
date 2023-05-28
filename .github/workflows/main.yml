@@ -43,9 +43,16 @@ jobs:
           context: ./db
           push: true
           tags: gbyzzz/university_schedule_web_app:postgres
-      - name: deploy
-        uses: bitovi/github-actions-deploy-docker-to-ec2@v0.5.0
+      - name: executing remote ssh commands using password
+        uses: appleboy/ssh-action@v0.1.10
         with:
-          aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws_default_region: us-east-1
+          host: ${{ secrets.HOST }}
+          username: ec2-user
+          key: ${{ secrets.KEY }}
+          script: |
+            docker login
+            docker pull gbyzzz/university_schedule_web_app
+            docker stop backend
+            docker rm backend
+            docker run --detach -name backend -p 443:8080 -e SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/university_web_app_db 
+            
