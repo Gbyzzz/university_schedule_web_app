@@ -58,7 +58,7 @@ jobs:
           script: |
             sudo docker rm -f backend
             sudo docker rmi gbyzzz/university_schedule_web_app:backend
-            sudo docker run --detach --restart always --name backend -p 80:8080 -e SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/university_web_app_db --network mynetwork gbyzzz/university_schedule_web_app:backend
+            sudo docker run --detach --restart always --name backend -p 443:8443 -e SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/university_web_app_db --network mynetwork gbyzzz/university_schedule_web_app:backend
       - name: Remove key
         run: rm key.pem
             
