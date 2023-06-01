@@ -41,9 +41,14 @@
                     </form>
                 </li>
             </ul>
-            <form action="/admin" sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_TEACHER')">
+            <form action="/admin" sec:authorize="hasRole('ROLE_ADMIN')">
                 <button type="submit" class="btn btn-dark me-3">
-                    User page
+                    Admin page
+                </button>
+            </form>
+            <form action="/admin" sec:authorize="hasRole('ROLE_TEACHER')">
+                <button type="submit" class="btn btn-dark me-3">
+                    Teacher page
                 </button>
             </form>
 
