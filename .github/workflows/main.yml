@@ -33,16 +33,16 @@ jobs:
         with:
           file: ./Dockerfile
           push: true
-          tags: gbyzzz/university_schedule_web_app:backend
+          tags: gbyzzz/gbyzzz_repository:university_backend
         
-#       -
-#         name: Build and push
-#         uses: docker/build-push-action@v4
-#         with:
-#           file: ./db/Dockerfile
-#           context: ./db
-#           push: true
-#           tags: gbyzzz/university_schedule_web_app:postgres
+      -
+        name: Build and push
+        uses: docker/build-push-action@v4
+        with:
+          file: ./db/Dockerfile
+          context: ./db
+          push: true
+          tags: gbyzzz/gbyzzz_repository:university_postgres
       - name: Get key
         uses: timheuer/base64-to-file@v1.2
         with:
@@ -57,8 +57,8 @@ jobs:
           key_path: './key.pem'
           script: |
             sudo docker rm -f backend
-            sudo docker rmi gbyzzz/university_schedule_web_app:backend
-            sudo docker run --detach --restart always --name backend -p 443:8443 -e SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/university_web_app_db --network mynetwork gbyzzz/university_schedule_web_app:backend
+            sudo docker rmi gbyzzz/gbyzzz_repository:university_backend
+            sudo docker run --detach --restart always --name backend -p 443:8443 -e SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/university_web_app_db --network mynetwork gbyzzz/gbyzzz_repository:university_backend
       - name: Remove key
         run: rm key.pem
             
